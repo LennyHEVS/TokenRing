@@ -39,27 +39,28 @@ void MacReceiver(void *argument)
 		if(qPtr[0] == TOKEN_TAG)
 		{
 			for(uint8_t i = 0;i<16;i++)
+			{
+				if(i!=gTokenInterface.myAddress)
 				{
-					if(i!=gTokenInterface.myAddress)
-					{
-						gTokenInterface.station_list[i] = qPtr[i+1];
-					}
+					gTokenInterface.station_list[i] = qPtr[i+1];
 				}
-				qPtr[gTokenInterface.myAddress+1] = gTokenInterface.station_list[gTokenInterface.myAddress];
+			}
+			qPtr[gTokenInterface.myAddress+1] = gTokenInterface.station_list[gTokenInterface.myAddress];
+			
+			if(mac_state == Receiving)
+			{
+				queueMsg.type = TOKEN;
+				retCode = osMessageQueuePut( 	
+				queue_macS_id,
+				&queueMsg,
+				osPriorityNormal,
+				osWaitForever); 	
+				CheckRetCode(retCode,__LINE__,__FILE__,CONTINUE);
+			}
+			else if(mac_state == AwaitingTransmission)
+			{
 				
-				if(mac_state == Receiving)
-				{
-					retCode = osMessageQueuePut( 	
-					queue_phyS_id,
-					&queueMsg,
-					osPriorityNormal,
-					osWaitForever); 	
-					CheckRetCode(retCode,__LINE__,__FILE__,CONTINUE);
-				}
-				else if(mac_state == AwaitingTransmission)
-				{
-					
-				}
+			}
 		}
 	}
 }

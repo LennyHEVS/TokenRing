@@ -20,6 +20,9 @@
 void MacSender(void *argument)
 {
 	struct queueMsg_t queueMsg;		// queue message
+	struct queueMsg_t queueMsg_LCD;		// queue message
+	void* buffer[4];		// message buffer
+	uint32_t bufferPtr;
 	uint8_t * qPtr;
 	osStatus_t retCode;
 	
@@ -42,7 +45,21 @@ void MacSender(void *argument)
 				
 				break;
 			case TOKEN:
+				queueMsg.type = TO_PHY;
+				retCode = osMessageQueuePut( 	
+				queue_phyS_id,
+				&queueMsg,
+				osPriorityNormal,
+				osWaitForever); 	
+				CheckRetCode(retCode,__LINE__,__FILE__,CONTINUE);
 				
+				queueMsg_LCD.type = TOKEN_LIST;
+				retCode = osMessageQueuePut( 	
+				queue_lcd_id,
+				&queueMsg_LCD,
+				osPriorityNormal,
+				osWaitForever); 	
+				CheckRetCode(retCode,__LINE__,__FILE__,CONTINUE);
 				break;
 			case NEW_TOKEN:
 				if(mac_state == Receiving)
@@ -66,6 +83,12 @@ void MacSender(void *argument)
 				break;
 			case DATABACK:
 				
+				break;
+			case START:
+				gTokenInterface.station_list[gTokenInterface.myAddress] |= (1 << CHAT_SAPI) + (1 << TIME_SAPI);
+				break;
+			case STOP:
+				gTokenInterface.station_list[gTokenInterface.myAddress] &= ~(1 << CHAT_SAPI);
 				break;
 			default:break;
 		}
