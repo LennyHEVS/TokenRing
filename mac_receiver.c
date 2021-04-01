@@ -19,7 +19,10 @@
 void MacReceiver(void *argument)
 {
 	struct queueMsg_t queueMsg;		// queue message
+	struct queueMsg_t queueMsg_LCD;		// queue message for the LCD
+	
 	uint8_t * qPtr;
+	
 	osStatus_t retCode;
 	
 	//------------------------------------------------------------------------------
@@ -46,6 +49,15 @@ void MacReceiver(void *argument)
 				}
 			}
 			qPtr[gTokenInterface.myAddress+1] = gTokenInterface.station_list[gTokenInterface.myAddress];
+			
+			queueMsg_LCD.type = TOKEN_LIST;
+			retCode = osMessageQueuePut( 	
+			queue_lcd_id,
+			&queueMsg_LCD,
+			osPriorityNormal,
+			osWaitForever); 	
+			CheckRetCode(retCode,__LINE__,__FILE__,CONTINUE);
+			
 			
 			if(mac_state == AwaitingTransmission)
 			{

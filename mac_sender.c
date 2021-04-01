@@ -88,7 +88,6 @@ void MAC_STOP_REQUEST(uint8_t SAPI)
 void MacSender(void *argument)
 {
 	struct queueMsg_t queueMsg;		// queue message
-	struct queueMsg_t queueMsg_LCD;		// queue message for the LCD
 	uint8_t * qPtr;
 	
 	uint8_t * sentFrame;	//last data packet sent
@@ -120,14 +119,6 @@ void MacSender(void *argument)
 				// MEMORY RELEASE	(received token : mac layer style)
 				//----------------------------------------------------------------------------
 				retCode = osMemoryPoolFree(memPool,queueMsg.anyPtr);
-				CheckRetCode(retCode,__LINE__,__FILE__,CONTINUE);
-			
-				queueMsg_LCD.type = TOKEN_LIST;
-				retCode = osMessageQueuePut( 	
-				queue_lcd_id,
-				&queueMsg_LCD,
-				osPriorityNormal,
-				osWaitForever); 	
 				CheckRetCode(retCode,__LINE__,__FILE__,CONTINUE);
 			
 				//Send data
