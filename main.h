@@ -31,6 +31,8 @@
 #define STX 							0x02			// any frame start char
 #define ETX								0x03			// any frame end char
 #define CONTINUE					0x0				// for check return code halt
+#define READ_BIT_STATUS		0x1				//for the position of the read bit in Status
+#define ACK_BIT_STATUS		0x0				//for the position of the ack bit in Status
 
 //--------------------------------------------------------------------------------
 // identifiers used in more the one file (thread)
