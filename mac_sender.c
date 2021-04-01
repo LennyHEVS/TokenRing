@@ -13,20 +13,7 @@
 #include "mac.h"
 #include "ext_led.h"
 
-//////////////////////////////////////////////////////////////////////////////////
-// PHYSICAL DATA REQUEST
-//////////////////////////////////////////////////////////////////////////////////
-void PH_DATA_REQUEST(struct queueMsg_t msg)
-{
-	osStatus_t retCode;
-	
-	retCode = osMessageQueuePut( 	
-					queue_phyS_id,
-					&msg,
-					osPriorityNormal,
-					osWaitForever); 	
-	CheckRetCode(retCode,__LINE__,__FILE__,CONTINUE);
-}
+
 //////////////////////////////////////////////////////////////////////////////////
 // MAC ERROR INDICATION
 //////////////////////////////////////////////////////////////////////////////////
@@ -40,6 +27,45 @@ void MAC_ERROR_INDICATION(struct queueMsg_t msg)
 					&msg,
 					osPriorityNormal,
 					osWaitForever); 	
+	CheckRetCode(retCode,__LINE__,__FILE__,CONTINUE);
+}
+//////////////////////////////////////////////////////////////////////////////////
+// MAC DATA REQUEST
+//////////////////////////////////////////////////////////////////////////////////
+void MAC_DATA_REQUEST(struct queueMsg_t msg)
+{
+	uint8_t * qPtr;
+	uint32_t msgLength;
+	uint32_t checksum = 0;
+	
+	osStatus_t retCode;
+	
+	if(bufferNb < BUFFER_SIZE)
+	{
+		bufferNb++;
+		
+		msgLength = strlen(msg.anyPtr);
+		
+		qPtr = osMemoryPoolAlloc(memPool,osWaitForever);
+		qPtr[0] = gTokenInterface.myAddress<<3 + msg.sapi;
+		qPtr[1] = msg.addr<<3 + msg.sapi;
+		qPtr[2] = msgLength;
+		
+		memcpy(qPtr+3,msg.anyPtr,msgLength);
+		for(uint32_t i=0;i<msgLength+3;i++)
+		{
+			checksum += qPtr[i];
+		}
+		
+		qPtr[3+msgLength] = checksum<<2;
+		
+		buffer[bufferNb-1] = qPtr;
+	}
+	
+	//----------------------------------------------------------------------------
+	// MEMORY RELEASE	(received data : mac layer style)
+	//----------------------------------------------------------------------------
+	retCode = osMemoryPoolFree(memPool,msg.anyPtr);
 	CheckRetCode(retCode,__LINE__,__FILE__,CONTINUE);
 }
 //////////////////////////////////////////////////////////////////////////////////
@@ -57,36 +83,18 @@ void MAC_STOP_REQUEST(uint8_t SAPI)
 	gTokenInterface.station_list[gTokenInterface.myAddress] &= ~(1 << SAPI);
 }
 //////////////////////////////////////////////////////////////////////////////////
-// MAC NEW TOKEN
-//////////////////////////////////////////////////////////////////////////////////
-void MAC_NEW_TOKEN()
-{
-	struct queueMsg_t msg;		// queue message
-	uint8_t * qPtr;
-	
-	msg.type = TOKEN;
-				
-	qPtr = osMemoryPoolAlloc(memPool,osWaitForever);
-	qPtr[0] = TOKEN_TAG;
-	gTokenInterface.station_list[gTokenInterface.myAddress] = (1 << CHAT_SAPI) + (1 << TIME_SAPI);
-	for(uint8_t i = 0;i<16;i++)
-	{
-		qPtr[i+1] = gTokenInterface.station_list[i];
-	}
-	msg.anyPtr = qPtr;
-	PH_DATA_REQUEST(msg);
-}
-//////////////////////////////////////////////////////////////////////////////////
 // THREAD MAC RECEIVER
 //////////////////////////////////////////////////////////////////////////////////
 void MacSender(void *argument)
 {
 	struct queueMsg_t queueMsg;		// queue message
 	struct queueMsg_t queueMsg_LCD;		// queue message for the LCD
-	uint8_t * sentData;	//last data packet sent
-	void* buffer[4];		// message buffer
-	uint32_t bufferPtr;
 	uint8_t * qPtr;
+	
+	uint8_t * sentFrame;	//last data packet sent
+	
+	uint32_t msgLength;
+	
 	osStatus_t retCode;
 	
 	//------------------------------------------------------------------------------
@@ -101,84 +109,93 @@ void MacSender(void *argument)
 			NULL,
 			osWaitForever); 	
     CheckRetCode(retCode,__LINE__,__FILE__,CONTINUE);
-		switch(mac_state)
+		switch(queueMsg.type)
 		{
-			case Receiving:
-				switch(queueMsg.type)
+			case DATA_IND:
+				MAC_DATA_REQUEST(queueMsg);
+				break;
+			case TOKEN:
+				
+				//----------------------------------------------------------------------------
+				// MEMORY RELEASE	(received token : mac layer style)
+				//----------------------------------------------------------------------------
+				retCode = osMemoryPoolFree(memPool,queueMsg.anyPtr);
+				CheckRetCode(retCode,__LINE__,__FILE__,CONTINUE);
+			
+				queueMsg_LCD.type = TOKEN_LIST;
+				retCode = osMessageQueuePut( 	
+				queue_lcd_id,
+				&queueMsg_LCD,
+				osPriorityNormal,
+				osWaitForever); 	
+				CheckRetCode(retCode,__LINE__,__FILE__,CONTINUE);
+			
+				//Send data
+				sentFrame = osMemoryPoolAlloc(memPool,osWaitForever);
+			
+				queueMsg.type = TO_PHY;
+				queueMsg.anyPtr = buffer[bufferNb-1];
+				memcpy(sentFrame,buffer[bufferNb-1],buffer[bufferNb-1][2] + 4);
+				PH_DATA_REQUEST(queueMsg);
+				bufferNb--;
+				break;
+			case NEW_TOKEN:
+				gTokenInterface.station_list[gTokenInterface.myAddress] = (1 << CHAT_SAPI) + (1 << TIME_SAPI);
+				MAC_NEW_TOKEN();
+				break;
+			case DATABACK:
+				qPtr = queueMsg.anyPtr;
+				msgLength = qPtr[2];
+				if((qPtr[3+msgLength] & 0x01) == 0x01)
 				{
-					case DATA_IND:
-						
-						break;
-					case TOKEN:
-						queueMsg.type = TO_PHY;
-						retCode = osMessageQueuePut( 	
-						queue_phyS_id,
-						&queueMsg,
-						osPriorityNormal,
-						osWaitForever); 	
+					if((qPtr[3+msgLength] & 0x02) == 0x02)
+					{
+						//----------------------------------------------------------------------------
+						// MEMORY RELEASE	(received frame : mac layer style)
+						//----------------------------------------------------------------------------
+						retCode = osMemoryPoolFree(memPool,queueMsg.anyPtr);
 						CheckRetCode(retCode,__LINE__,__FILE__,CONTINUE);
 						
-						queueMsg_LCD.type = TOKEN_LIST;
-						retCode = osMessageQueuePut( 	
-						queue_lcd_id,
-						&queueMsg_LCD,
-						osPriorityNormal,
-						osWaitForever); 	
+						//----------------------------------------------------------------------------
+						// MEMORY RELEASE	(sent frame : mac layer style)
+						//----------------------------------------------------------------------------
+						retCode = osMemoryPoolFree(memPool,sentFrame);
 						CheckRetCode(retCode,__LINE__,__FILE__,CONTINUE);
-						break;
-					case NEW_TOKEN:
+						
 						MAC_NEW_TOKEN();
+					}
+					else
+					{
+						//Send data back
+						qPtr = osMemoryPoolAlloc(memPool,osWaitForever);
+						queueMsg.type = TO_PHY;
+						queueMsg.anyPtr = qPtr;
+						memcpy(qPtr,sentFrame,sentFrame[2] + 4);
+						PH_DATA_REQUEST(queueMsg);
 						break;
-					case DATABACK:
-						
-						break;
-					case START:
-						MAC_START_REQUEST(CHAT_SAPI);
-						break;
-					case STOP:
-						MAC_STOP_REQUEST(CHAT_SAPI);
-						break;
-					default:break;
+					}
+				}
+				else
+				{
+					MAC_ERROR_INDICATION(queueMsg);
+					MAC_NEW_TOKEN();
+				}
+				if(bufferNb == 0)	//buffer empty ?
+				{
+					mac_state = Receiving;
+				}
+				else
+				{
+					mac_state = AwaitingTransmission;
 				}
 				break;
-			case AwaitingTransmission:
-				switch(queueMsg.type)
-				{
-					case DATA_IND:
-						
-						break;
-					case TOKEN:
-						queueMsg.type = TO_PHY;
-						retCode = osMessageQueuePut( 	
-						queue_phyS_id,
-						&queueMsg,
-						osPriorityNormal,
-						osWaitForever); 	
-						CheckRetCode(retCode,__LINE__,__FILE__,CONTINUE);
-						
-						queueMsg_LCD.type = TOKEN_LIST;
-						retCode = osMessageQueuePut( 	
-						queue_lcd_id,
-						&queueMsg_LCD,
-						osPriorityNormal,
-						osWaitForever); 	
-						CheckRetCode(retCode,__LINE__,__FILE__,CONTINUE);
-						break;
-					case NEW_TOKEN:
-						MAC_NEW_TOKEN();
-						break;
-					case DATABACK:
-						
-						break;
-					case START:
-						MAC_START_REQUEST(CHAT_SAPI);
-						break;
-					case STOP:
-						MAC_STOP_REQUEST(CHAT_SAPI);
-						break;
-					default:break;
-				}
+			case START:
+				MAC_START_REQUEST(CHAT_SAPI);
 				break;
+			case STOP:
+				MAC_STOP_REQUEST(CHAT_SAPI);
+				break;
+			default:break;
 		}
 	}
 }

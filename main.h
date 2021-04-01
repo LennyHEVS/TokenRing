@@ -5,6 +5,9 @@
 /// \version 1.0 - original for RTX5
 /// \date  2018-02
 //////////////////////////////////////////////////////////////////////////////////
+#ifndef __MAIN_H
+#define __MAIN_H
+
 #include "stm32f7xx_hal.h"
 
 #include <stdlib.h>		
@@ -117,3 +120,4 @@ struct queueMsg_t
 	uint8_t	addr;						///< the source or destination address
 	uint8_t sapi;						///< the source or destination SAPI
 };
+#endif ///__MAIN_H

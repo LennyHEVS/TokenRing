@@ -47,7 +47,7 @@ void MacReceiver(void *argument)
 			}
 			qPtr[gTokenInterface.myAddress+1] = gTokenInterface.station_list[gTokenInterface.myAddress];
 			
-			if(mac_state == Receiving)
+			if(mac_state == AwaitingTransmission)
 			{
 				queueMsg.type = TOKEN;
 				retCode = osMessageQueuePut( 	
@@ -57,9 +57,15 @@ void MacReceiver(void *argument)
 				osWaitForever); 	
 				CheckRetCode(retCode,__LINE__,__FILE__,CONTINUE);
 			}
-			else if(mac_state == AwaitingTransmission)
+			else
 			{
+				//----------------------------------------------------------------------------
+				// MEMORY RELEASE	(received token : mac layer style)
+				//----------------------------------------------------------------------------
+				retCode = osMemoryPoolFree(memPool,queueMsg.anyPtr);
+				CheckRetCode(retCode,__LINE__,__FILE__,CONTINUE);
 				
+				MAC_NEW_TOKEN();
 			}
 		}
 	}
