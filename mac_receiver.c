@@ -22,12 +22,7 @@ void MacReceiver(void *argument)
 {
 	struct queueMsg_t queueMsg;		// queue message
 	struct queueMsg_t queueMsg_LCD;		// queue message for the LCD
-<<<<<<< HEAD
-=======
-	
->>>>>>> dev-lenny
 	uint8_t * qPtr;
-	
 	osStatus_t retCode;
 	
 	//------------------------------------------------------------------------------
@@ -59,16 +54,7 @@ void MacReceiver(void *argument)
 			}
 			qPtr[gTokenInterface.myAddress+1] = gTokenInterface.station_list[gTokenInterface.myAddress];
 			
-			queueMsg_LCD.type = TOKEN_LIST;
-			retCode = osMessageQueuePut( 	
-			queue_lcd_id,
-			&queueMsg_LCD,
-			osPriorityNormal,
-			osWaitForever); 	
-			CheckRetCode(retCode,__LINE__,__FILE__,CONTINUE);
-			
-			
-			if(mac_state == AwaitingTransmission)
+			if(mac_state == Receiving)
 			{
 				//Update Lcd and send the TOKEN to next station
 				queueMsg.type = TO_PHY;
@@ -84,22 +70,12 @@ void MacReceiver(void *argument)
 				CheckRetCode(retCode,__LINE__,__FILE__,CONTINUE);
 				mac_state = Receiving;				
 			}
-			else
+			else if(mac_state == AwaitingTransmission)
 			{
-<<<<<<< HEAD
 				//if receive token but awaiting -->
 				// send it to sender 
 				queueMsg.type = TOKEN;
 				queue_to_send = queue_macS_id;				
-=======
-				//----------------------------------------------------------------------------
-				// MEMORY RELEASE	(received token : mac layer style)
-				//----------------------------------------------------------------------------
-				retCode = osMemoryPoolFree(memPool,queueMsg.anyPtr);
-				CheckRetCode(retCode,__LINE__,__FILE__,CONTINUE);
-				
-				MAC_NEW_TOKEN();
->>>>>>> dev-lenny
 			}
 			
 			/**SEND THE MESSAGE **/
@@ -182,5 +158,3 @@ void MacReceiver(void *argument)
 		}//if queueMsg.type == FROM_PHY
 	}//for
 }
-
-
