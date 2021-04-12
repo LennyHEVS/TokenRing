@@ -62,11 +62,8 @@ void MacReceiver(void *argument)
 				
 				//send to lcd the token list
 				queueMsg_LCD.type = TOKEN_LIST;
-				retCode = osMessageQueuePut( 	
-				queue_lcd_id,
-				&queueMsg_LCD,
-				osPriorityNormal,
-				osWaitForever); 	
+				/**send token list on the LCD**/
+				retCode = LAY_DATA_PUT(queueMsg_LCD,queue_lcd_id);					
 				CheckRetCode(retCode,__LINE__,__FILE__,CONTINUE);
 				mac_state = Receiving;				
 			}
@@ -77,14 +74,6 @@ void MacReceiver(void *argument)
 				queueMsg.type = TOKEN;
 				queue_to_send = queue_macS_id;				
 			}
-			
-			/**SEND THE MESSAGE **/
-			retCode = osMessageQueuePut( 	
-			queue_to_send,
-			&queueMsg,
-			osPriorityNormal,
-			osWaitForever); 	
-			CheckRetCode(retCode,__LINE__,__FILE__,CONTINUE);
 		}else if(queueMsg.type == FROM_PHY)
 		{
 			/*****************************************
@@ -102,13 +91,6 @@ void MacReceiver(void *argument)
 				queueMsg.addr = gTokenInterface.myAddress;
 				queueMsg.sapi = qPtr[0] & 7;//0b0000111;
 				queue_to_send = queue_macS_id;
-				
-				retCode = osMessageQueuePut( 	
-				queue_macS_id,
-				&queueMsg,
-				osPriorityNormal,
-				osWaitForever); 	
-				CheckRetCode(retCode,__LINE__,__FILE__,CONTINUE);					
 			}else{
 				if(qPtr[1]&(gTokenInterface.myAddress << 3) ==(gTokenInterface.myAddress << 3))
 				{
@@ -147,14 +129,11 @@ void MacReceiver(void *argument)
 					queueMsg.type = TO_PHY;		
 					queue_to_send = queue_phyS_id;
 				}
-				/**SEND THE MESSAGE **/
-				retCode = osMessageQueuePut( 	
-				queue_to_send,
-				&queueMsg,
-				osPriorityNormal,
-				osWaitForever); 	
-				CheckRetCode(retCode,__LINE__,__FILE__,CONTINUE);			
+								
 			}//if qPtr[1]&(gTokenInterface.myAddress << 3) ==(gTokenInterface.myAddress << 3)
 		}//if queueMsg.type == FROM_PHY
+			/**SEND THE MESSAGE **/
+			retCode = LAY_DATA_PUT(queueMsg,queue_to_send);	
+			CheckRetCode(retCode,__LINE__,__FILE__,CONTINUE);	
 	}//for
 }

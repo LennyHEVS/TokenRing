@@ -38,3 +38,20 @@ void MAC_NEW_TOKEN()
 	msg.anyPtr = qPtr;
 	PH_DATA_REQUEST(msg);
 }
+//////////////////////////////////////////////////////////////////////////////////
+// PUT DATA INTO A LAYER QUEUE
+//msg : type queueMsg, it is a msg to send, it must have the corresponding queueMsg.type
+//queue_to_send : id of the queue wher send msg
+//////////////////////////////////////////////////////////////////////////////////
+osStatus_t LAY_DATA_PUT(struct queueMsg_t msg,osMessageQueueId_t queue_to_send)
+{
+	osStatus_t retCode;
+	
+	retCode = osMessageQueuePut( 	
+					queue_to_send,
+					&msg,
+					osPriorityNormal,
+					osWaitForever); 	
+	CheckRetCode(retCode,__LINE__,__FILE__,CONTINUE);
+	return retCode;
+}
