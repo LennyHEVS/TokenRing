@@ -53,5 +53,4 @@ void LAY_DATA_PUT(struct queueMsg_t msg,osMessageQueueId_t queue_to_send)
 					osPriorityNormal,
 					osWaitForever); 	
 	CheckRetCode(retCode,__LINE__,__FILE__,CONTINUE);
-	return retCode;
 }
