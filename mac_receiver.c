@@ -22,6 +22,7 @@ void MacReceiver(void *argument)
 {
 	struct queueMsg_t queueMsg;		// queue message
 	struct queueMsg_t queueMsg_LCD;		// queue message for the LCD
+	struct queueMsg_t queueMsg_IND;		// queue message for the LCD
 	uint8_t * qPtr;
 	osStatus_t retCode;
 	
@@ -81,7 +82,7 @@ void MacReceiver(void *argument)
 			******************************************/
 			// if it is not a token
 			//an and because qPtr[0] = 0|AAAA|SSS
-			if(qPtr[0]&(gTokenInterface.myAddress << 3) == (gTokenInterface.myAddress << 3))
+			if(qPtr[0]>>3 == gTokenInterface.myAddress )
 			{
 				/*****************************************
 				*SRC ADDR = MY ADDR
@@ -92,7 +93,7 @@ void MacReceiver(void *argument)
 				queueMsg.sapi = qPtr[0] & 7;//0b0000111;
 				queue_to_send = queue_macS_id;
 			}else{
-				if(qPtr[1]&(gTokenInterface.myAddress << 3) ==(gTokenInterface.myAddress << 3))
+				if(qPtr[1]>>3 == gTokenInterface.myAddress)
 				{
 					/*****************************************
 					*DEST ADDR = MY ADDR
@@ -104,11 +105,33 @@ void MacReceiver(void *argument)
 					}
 					//We keep only the 6-LSB
 					crc &= 0x3F;//0b111111;
-					if(crc == (qPtr[qPtr[2] + 3] & 0x3F))
+					if(crc == ((qPtr[qPtr[2] + 3]>>2) & 0x3F))
 					{
 						/*****************************************
 						*CHECKSUM VALID
 						******************************************/
+						//Modify R to 1
+						qPtr[qPtr[2] + 3] |= (1 << READ_BIT_STATUS) ;
+						//Set ACK to 1
+						qPtr[qPtr[2] + 3] |= (1 << ACK_BIT_STATUS);	
+						PH_DATA_REQUEST(queueMsg);
+						//an and because qPtr[0] = 0|AAAA|SSS
+						uint8_t Sapi = qPtr[0] & 0x8;
+						switch (Sapi){
+							case CHAT_SAPI :
+								queueMsg_IND.anyPtr = osMemoryPoolAlloc(memPool,osWaitForever);
+								queueMsg_IND.type = DATA_IND;
+								memcpy(queueMsg_IND.anyPtr,qPtr+3,qPtr[2]);
+								LAY_DATA_PUT(queueMsg_IND,queue_chatS_id);
+								break;
+							
+							case TIME_SAPI :
+								queueMsg_IND.anyPtr = osMemoryPoolAlloc(memPool,osWaitForever);
+								queueMsg_IND.type = DATA_IND;
+								memcpy(queueMsg_IND.anyPtr,qPtr+3,qPtr[2]);
+								LAY_DATA_PUT(queueMsg_IND,queue_timeS_id);
+								break;
+						}
 						
 					}else{
 						/*****************************************
