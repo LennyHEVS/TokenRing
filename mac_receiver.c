@@ -65,8 +65,7 @@ void MacReceiver(void *argument)
 				//send to lcd the token list
 				queueMsg_LCD.type = TOKEN_LIST;
 				/**send token list on the LCD**/
-				retCode = LAY_DATA_PUT(queueMsg_LCD,queue_lcd_id);					
-				CheckRetCode(retCode,__LINE__,__FILE__,CONTINUE);
+				LAY_DATA_PUT(queueMsg_LCD,queue_lcd_id);					
 				mac_state = Receiving;				
 			}
 			else if(mac_state == AwaitingTransmission)
