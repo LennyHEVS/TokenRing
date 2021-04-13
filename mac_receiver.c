@@ -60,6 +60,7 @@ void MacReceiver(void *argument)
 				//Update Lcd and send the TOKEN to next station
 				queueMsg.type = TO_PHY;
 				queue_to_send = queue_phyS_id;
+				LAY_DATA_PUT(queueMsg,queue_to_send);
 				
 				//send to lcd the token list
 				queueMsg_LCD.type = TOKEN_LIST;
@@ -73,7 +74,8 @@ void MacReceiver(void *argument)
 				//if receive token but awaiting -->
 				// send it to sender 
 				queueMsg.type = TOKEN;
-				queue_to_send = queue_macS_id;				
+				queue_to_send = queue_macS_id;	
+				LAY_DATA_PUT(queueMsg,queue_to_send);				
 			}
 		}else if(queueMsg.type == FROM_PHY)
 		{
@@ -92,6 +94,7 @@ void MacReceiver(void *argument)
 				queueMsg.addr = gTokenInterface.myAddress;
 				queueMsg.sapi = qPtr[0] & 7;//0b0000111;
 				queue_to_send = queue_macS_id;
+				LAY_DATA_PUT(queueMsg,queue_to_send);
 			}else{
 				if(qPtr[1]>>3 == gTokenInterface.myAddress)
 				{
@@ -116,7 +119,7 @@ void MacReceiver(void *argument)
 						qPtr[qPtr[2] + 3] |= (1 << ACK_BIT_STATUS);	
 						PH_DATA_REQUEST(queueMsg);
 						//an and because qPtr[0] = 0|AAAA|SSS
-						uint8_t Sapi = qPtr[0] & 0x8;
+						uint8_t Sapi = qPtr[0] & 0x8;//0b00000111
 						switch (Sapi){
 							case CHAT_SAPI :
 								queueMsg_IND.anyPtr = osMemoryPoolAlloc(memPool,osWaitForever);
@@ -144,6 +147,7 @@ void MacReceiver(void *argument)
 						
 						queueMsg.type = TO_PHY;
 						queue_to_send = queue_phyS_id;
+						LAY_DATA_PUT(queueMsg,queue_to_send);	
 					}					
 				}else{
 					/*****************************************
@@ -151,12 +155,10 @@ void MacReceiver(void *argument)
 					******************************************/
 					queueMsg.type = TO_PHY;		
 					queue_to_send = queue_phyS_id;
+					LAY_DATA_PUT(queueMsg,queue_to_send);	
 				}
 								
 			}//if qPtr[1]&(gTokenInterface.myAddress << 3) ==(gTokenInterface.myAddress << 3)
 		}//if queueMsg.type == FROM_PHY
-			/**SEND THE MESSAGE **/
-			retCode = LAY_DATA_PUT(queueMsg,queue_to_send);	
-			CheckRetCode(retCode,__LINE__,__FILE__,CONTINUE);	
 	}//for
 }
