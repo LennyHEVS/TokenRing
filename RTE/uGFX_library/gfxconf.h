@@ -64,7 +64,7 @@
 //    #define GFX_CPU_ENDIAN                           GFX_CPU_ENDIAN_UNKNOWN
 //<o> GFX heap size (in bytes), min. 32000		
 
-    #define GFX_OS_HEAP_SIZE                         60000
+    #define GFX_OS_HEAP_SIZE                         32000
     #define GFX_OS_NO_INIT                           TRUE
 //    #define GFX_OS_EXTRA_INIT_FUNCTION               myOSInitRoutine
 //    #define GFX_OS_EXTRA_DEINIT_FUNCTION             myOSDeInitRoutine
@@ -84,7 +84,7 @@
 #define GFX_USE_GDISP                                1
 #define GDISP_NEED_CONTROL                           1		// always because LCD is 180 degree
 //<q> Use of draw circle functions
-#define GDISP_NEED_CIRCLE                            1
+#define GDISP_NEED_CIRCLE                            0
 //<q> Use of draw circle into circle
 #define GDISP_NEED_DUALCIRCLE                        0
 //<q> Use of draw ellipse functions
@@ -98,7 +98,7 @@
 //<q> Use of scrolling functions
 #define GDISP_NEED_SCROLL                            0
 //<q> Use of read pixel functions
-#define GDISP_NEED_PIXELREAD                         1
+#define GDISP_NEED_PIXELREAD                         0
 //#define GDISP_NEED_QUERY                             FALSE
 #define GDISP_NEED_MULTITHREAD                       1
 //#define GDISP_NEED_STREAMING                         FALSE
@@ -112,15 +112,15 @@
 #define GDISP_NEED_TEXT                              1
 
 //<q> Text word wrap
-    #define GDISP_NEED_TEXT_WORDWRAP                 1
+    #define GDISP_NEED_TEXT_WORDWRAP                 0
 //    #define GDISP_NEED_TEXT_BOXPADLR                 1
 //    #define GDISP_NEED_TEXT_BOXPADTB                 1
 //<q> Text antialiasing
-    #define GDISP_NEED_ANTIALIAS                     1
+    #define GDISP_NEED_ANTIALIAS                     0
 //<q> Text UTF8
     #define GDISP_NEED_UTF8                          1
 //<q> Text kerning
-    #define GDISP_NEED_TEXT_KERNING                  1
+    #define GDISP_NEED_TEXT_KERNING                  0
 
 // <e> Fonts (use one at least)
 #define FOR_CONF_WIZARD 1
@@ -151,9 +151,9 @@
 //<q> Font Fixed_5x8
     #define GDISP_INCLUDE_FONT_FIXED_5X8             0
 //<q> Font DejaVuSans12_aa
-    #define GDISP_INCLUDE_FONT_DEJAVUSANS12_AA       1
+    #define GDISP_INCLUDE_FONT_DEJAVUSANS12_AA       0
 //<q> Font DejaVuSans16_aa
-    #define GDISP_INCLUDE_FONT_DEJAVUSANS16_AA       1
+    #define GDISP_INCLUDE_FONT_DEJAVUSANS16_AA       0
 //<q> Font DejaVuSans20_aa
     #define GDISP_INCLUDE_FONT_DEJAVUSANS20_AA       0
 //<q> Font Dejavusans24_aa
@@ -163,23 +163,23 @@
 //<q> Font DejaVuSansBold12_aa
     #define GDISP_INCLUDE_FONT_DEJAVUSANSBOLD12_AA   0
 //<q> Font user
-    #define GDISP_INCLUDE_USER_FONTS                 1
+    #define GDISP_INCLUDE_USER_FONTS                 0
 // </e>
 // </e>
 // <e> Image usage
-#define GDISP_NEED_IMAGE                             1
+#define GDISP_NEED_IMAGE                             0
 // <e> Image bitmap (BMP)
-    #define GDISP_NEED_IMAGE_BMP                     1
+    #define GDISP_NEED_IMAGE_BMP                     0
 //<q> Bitmap 1 bit
     #define GDISP_NEED_IMAGE_BMP_1               0
 //<q> Bitmap 4 bits
     #define GDISP_NEED_IMAGE_BMP_4               0
 //<q> Bitmap 4 bits RLE compressed
-    #define GDISP_NEED_IMAGE_BMP_4_RLE           1
+    #define GDISP_NEED_IMAGE_BMP_4_RLE           0
 //<q> Bitmap 8 bits
     #define GDISP_NEED_IMAGE_BMP_8               0
 //<q> Bitmap 8 bits RLE compressed
-    #define GDISP_NEED_IMAGE_BMP_8_RLE           1
+    #define GDISP_NEED_IMAGE_BMP_8_RLE           0
 //<q> Bitmap 16 bits
     #define GDISP_NEED_IMAGE_BMP_16              0
 //<q> Bitmap 24 bits
@@ -259,7 +259,7 @@
 // GWIN                                                                  //
 ///////////////////////////////////////////////////////////////////////////
 // <e> GWIN configuration
-#define GFX_USE_GWIN                                 1
+#define GFX_USE_GWIN                                 0
 // <e> Use windows manager
   #define GWIN_NEED_WINDOWMANAGER                    1
 //<q> Redraw imadiate
@@ -272,13 +272,13 @@
       #define GWIN_FLASHING_PERIOD                 250
 // </e>
 // <e> Console support
-#define GWIN_NEED_CONSOLE                            1
+#define GWIN_NEED_CONSOLE                            0
 //<q> Console history
-    #define GWIN_CONSOLE_HISTORY_ATCREATE        1
-//    #define GWIN_CONSOLE_USE_HISTORY                 
+    #define GWIN_CONSOLE_HISTORY_ATCREATE            0
+//    #define GWIN_CONSOLE_USE_HISTORY                 0
 //        #define GWIN_CONSOLE_HISTORY_AVERAGING       FALSE
 //<q> Use escape command for coloring
-    #define GWIN_CONSOLE_ESCSEQ                      1
+    #define GWIN_CONSOLE_ESCSEQ                      0
 //    #define GWIN_CONSOLE_USE_BASESTREAM              FALSE	// chibios only
 //<q> Floating numbers support
     #define GWIN_CONSOLE_USE_FLOAT                   0
@@ -289,7 +289,7 @@
 #define GWIN_NEED_WIDGET                             1
 //#define GWIN_FOCUS_HIGHLIGHT_WIDTH                   1
 //<q> Label support
-    #define GWIN_NEED_LABEL                          1
+    #define GWIN_NEED_LABEL                          0
 //        #define GWIN_LABEL_ATTRIBUTE                 FALSE
 //<q> Button support
     #define GWIN_NEED_BUTTON                         1
@@ -300,14 +300,14 @@
 //        #define GWIN_SLIDER_DEAD_BAND                5
 //        #define GWIN_SLIDER_TOGGLE_INC               20
 //<q> Checkbox support
-    #define GWIN_NEED_CHECKBOX                       1
+    #define GWIN_NEED_CHECKBOX                       0
 //<e> Image support
-    #define GWIN_NEED_IMAGE                          1
+    #define GWIN_NEED_IMAGE                          0
 //<q> Image animation support
         #define GWIN_NEED_IMAGE_ANIMATION            0
 //</e>
 //<q> Radio button support
-    #define GWIN_NEED_RADIO                          1
+    #define GWIN_NEED_RADIO                          0
 //<e> List support		
     #define GWIN_NEED_LIST                           0
 //<q> List image support		
@@ -325,7 +325,7 @@
     #define GWIN_NEED_TEXTEDIT                       0
 //    #define GWIN_FLAT_STYLING                        FALSE
 //<q> Widgets tag support		
-    #define GWIN_WIDGET_TAGS                         1
+    #define GWIN_WIDGET_TAGS                         0
 //<q> Containers support		
     #define GWIN_NEED_CONTAINERS                        1
 //<q> Need container support		
@@ -347,7 +347,7 @@
 // GEVENT                                                                //
 ///////////////////////////////////////////////////////////////////////////
 // <e> GEVENT configuration
-#define GFX_USE_GEVENT                               1
+#define GFX_USE_GEVENT                               0
 
 //#define GEVENT_ASSERT_NO_RESOURCE                    FALSE
 //<o> Maximum size of an event (in bytes)		
@@ -379,10 +379,10 @@
 // GINPUT                                                                //
 ///////////////////////////////////////////////////////////////////////////
 // <e> GINPUT configuration
-#define GFX_USE_GINPUT                               1
+#define GFX_USE_GINPUT                               0
 
 //<q> Mouse / touchscreen support
-#define GINPUT_NEED_MOUSE                            1
+#define GINPUT_NEED_MOUSE                            0
 //    #define GINPUT_TOUCH_STARTRAW                    FALSE
 
 //    #define GINPUT_TOUCH_NOTOUCH                     FALSE
@@ -409,7 +409,7 @@
 // GFILE                                                                 //
 ///////////////////////////////////////////////////////////////////////////
 // <e> GFILE configuration
-#define GFX_USE_GFILE                                1
+#define GFX_USE_GFILE                                0
 // <e> String support
 #define GFILE_NEED_STRINGS                           0
 //<q> printfg, fprintg, etc support

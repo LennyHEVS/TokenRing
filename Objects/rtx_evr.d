@@ -7,7 +7,7 @@
 .\objects\rtx_evr.o: C:\Users\favre\AppData\Local\Arm\Packs\ARM\CMSIS\5.5.1\CMSIS\RTOS2\Include\cmsis_os2.h
 .\objects\rtx_evr.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
 .\objects\rtx_evr.o: .\RTE\CMSIS\RTX_Config.h
-.\objects\rtx_evr.o: C:\Users\favre\AppData\Local\Arm\Packs\ARM\CMSIS\5.5.1\CMSIS\RTOS2\RTX\Include\rtx_os.h
 .\objects\rtx_evr.o: .\RTE\_Target_1\RTE_Components.h
+.\objects\rtx_evr.o: C:\Users\favre\AppData\Local\Arm\Packs\ARM\CMSIS\5.5.1\CMSIS\RTOS2\RTX\Include\rtx_os.h
 .\objects\rtx_evr.o: C:\Users\favre\AppData\Local\Arm\Packs\Keil\ARM_Compiler\1.6.1\Include\EventRecorder.h
 .\objects\rtx_evr.o: .\RTE\Compiler\EventRecorderConf.h
