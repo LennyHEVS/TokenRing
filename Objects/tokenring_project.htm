@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Objects\tokenring_project.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\tokenring_project.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Tue Apr 13 13:36:56 2021
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Thu Apr 15 13:35:59 2021
 <BR><P>
 <H3>Maximum Stack Usage =        568 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -2724,7 +2724,7 @@ Global Symbols
 <LI><a href="#[243]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;I2C_Uninitialize
 </UL>
 
-<P><STRONG><a name="[216]"></a>HAL_GPIO_EXTI_Callback</STRONG> (Thumb, 54 bytes, Stack size 24 bytes, chat_sender.o(i.HAL_GPIO_EXTI_Callback))
+<P><STRONG><a name="[216]"></a>HAL_GPIO_EXTI_Callback</STRONG> (Thumb, 48 bytes, Stack size 24 bytes, chat_sender.o(i.HAL_GPIO_EXTI_Callback))
 <BR><BR>[Stack]<UL><LI>Max Depth = 216 + Unknown Stack Size
 <LI>Call Chain = HAL_GPIO_EXTI_Callback &rArr; CheckRetCode &rArr; __2printf &rArr; _printf_char_file &rArr; _mutex_release &rArr; os_kernel_is_active &rArr; osKernelGetState &rArr; svcRtxKernelGetState &rArr; EvrRtxKernelGetState &rArr; EventRecord2 &rArr; EventRecordItem
 </UL>
@@ -3448,10 +3448,10 @@ Global Symbols
 <LI><a href="#[2a6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gwinGButtonCreate
 <LI><a href="#[2b1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_gcontainerCreate
 </UL>
-<BR>[Address Reference Count : 4]<UL><LI> gwin_widget.o(i._gwinSendEvent)
-<LI> gwin_widget.o(i.gwinAttachListener)
+<BR>[Address Reference Count : 4]<UL><LI> gwin_widget.o(i.gwinAttachListener)
 <LI> gwin_checkbox.o(i.SendCheckboxEvent)
 <LI> gwin_radio.o(i.SendRadioEvent)
+<LI> gwin_widget.o(i._gwinSendEvent)
 </UL>
 <P><STRONG><a name="[f5]"></a>_gwidgetDestroy</STRONG> (Thumb, 42 bytes, Stack size 8 bytes, gwin_widget.o(i._gwidgetDestroy))
 <BR><BR>[Stack]<UL><LI>Max Depth = 104<LI>Call Chain = _gwidgetDestroy &rArr; geventDetachSourceListeners &rArr; deleteAssignments &rArr; doExitEvent &rArr; osSemaphoreRelease &rArr; osRtxPostProcess &rArr; isr_queue_put
@@ -3461,10 +3461,10 @@ Global Symbols
 </UL>
 <BR>[Called By]<UL><LI><a href="#[fd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_gcontainerDestroy
 </UL>
-<BR>[Address Reference Count : 4]<UL><LI> gwin_label.o(.constdata)
-<LI> gwin_radio.o(.constdata)
-<LI> gwin_button.o(.constdata)
+<BR>[Address Reference Count : 4]<UL><LI> gwin_button.o(.constdata)
 <LI> gwin_checkbox.o(.constdata)
+<LI> gwin_label.o(.constdata)
+<LI> gwin_radio.o(.constdata)
 </UL>
 <P><STRONG><a name="[2c8]"></a>_gwidgetInit</STRONG> (Thumb, 40 bytes, Stack size 8 bytes, gwin_widget.o(i._gwidgetInit))
 <BR><BR>[Stack]<UL><LI>Max Depth = 96<LI>Call Chain = _gwidgetInit &rArr; geventRegisterCallback &rArr; doExitEvent &rArr; osSemaphoreRelease &rArr; osRtxPostProcess &rArr; isr_queue_put
@@ -3480,11 +3480,11 @@ Global Symbols
 <P><STRONG><a name="[f6]"></a>_gwidgetRedraw</STRONG> (Thumb, 26 bytes, Stack size 8 bytes, gwin_widget.o(i._gwidgetRedraw))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = _gwidgetRedraw
 </UL>
-<BR>[Address Reference Count : 5]<UL><LI> gwin_label.o(.constdata)
-<LI> gwin_radio.o(.constdata)
-<LI> gwin_button.o(.constdata)
+<BR>[Address Reference Count : 5]<UL><LI> gwin_button.o(.constdata)
 <LI> gwin_checkbox.o(.constdata)
 <LI> gwin_container.o(.constdata)
+<LI> gwin_label.o(.constdata)
+<LI> gwin_radio.o(.constdata)
 </UL>
 <P><STRONG><a name="[2cc]"></a>_gwinDestroy</STRONG> (Thumb, 100 bytes, Stack size 16 bytes, gwin.o(i._gwinDestroy))
 <BR><BR>[Stack]<UL><LI>Max Depth = 160<LI>Call Chain = _gwinDestroy &rArr; _gwinFlushRedraws &rArr; gfxSemWait &rArr; osKernelGetTickFreq &rArr; svcRtxKernelGetTickFreq &rArr; EvrRtxKernelGetTickFreq &rArr; EventRecord2 &rArr; EventRecordItem
@@ -3726,9 +3726,9 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[24d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gdispGFillArea
 </UL>
-<BR>[Address Reference Count : 3]<UL><LI> gui.o(i._createPageaddressSelectDisplay)
+<BR>[Address Reference Count : 3]<UL><LI> gui.o(i._createPagemainDisplay)
+<LI> gui.o(i._createPageaddressSelectDisplay)
 <LI> gui.o(i._createPageconfigDisplay)
-<LI> gui.o(i._createPagemainDisplay)
 </UL>
 <P><STRONG><a name="[7f]"></a>_fputc$unlocked</STRONG> (Thumb, 26 bytes, Stack size 0 bytes, fputc.o(i.fputc))
 <BR><BR>[Stack]<UL><LI>Max Depth = 32<LI>Call Chain = _fputc$unlocked &rArr; __flsbuf_byte
@@ -4954,8 +4954,8 @@ Global Symbols
 </UL>
 <BR>[Called By]<UL><LI><a href="#[95]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TimeSender
 <LI><a href="#[8f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DebugStation
-<LI><a href="#[e7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ft5336Init
 <LI><a href="#[17d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BSP_SDRAM_Initialization_sequence
+<LI><a href="#[e7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ft5336Init
 </UL>
 
 <P><STRONG><a name="[28f]"></a>osEventFlagsClear</STRONG> (Thumb, 58 bytes, Stack size 16 bytes, rtx_evflags.o(i.osEventFlagsClear))
@@ -5204,8 +5204,6 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[10f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_mutex_acquire
 <LI><a href="#[252]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gdispGClear
 <LI><a href="#[24d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gdispGFillArea
-<LI><a href="#[dc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_gdispInitDriver
-<LI><a href="#[de]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_gdispDeInitDriver
 <LI><a href="#[2b9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gdispGSetClip
 <LI><a href="#[2ba]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gdispGFlush
 <LI><a href="#[2fd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gdispGFillStringBox
@@ -5218,6 +5216,8 @@ Global Symbols
 <LI><a href="#[2f1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gdispGDrawBox
 <LI><a href="#[2b8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gdispGControl
 <LI><a href="#[2f0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gdispGBlitArea
+<LI><a href="#[dc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_gdispInitDriver
+<LI><a href="#[de]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_gdispDeInitDriver
 <LI><a href="#[286]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;geventSendEvent
 <LI><a href="#[2c9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;geventRegisterCallback
 <LI><a href="#[20c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;geventGetSourceListener
@@ -5258,8 +5258,6 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[112]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_mutex_release
 <LI><a href="#[252]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gdispGClear
 <LI><a href="#[24d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gdispGFillArea
-<LI><a href="#[dc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_gdispInitDriver
-<LI><a href="#[de]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_gdispDeInitDriver
 <LI><a href="#[2b9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gdispGSetClip
 <LI><a href="#[2ba]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gdispGFlush
 <LI><a href="#[2fd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gdispGFillStringBox
@@ -5272,6 +5270,8 @@ Global Symbols
 <LI><a href="#[2f1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gdispGDrawBox
 <LI><a href="#[2b8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gdispGControl
 <LI><a href="#[2f0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gdispGBlitArea
+<LI><a href="#[dc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_gdispInitDriver
+<LI><a href="#[de]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_gdispDeInitDriver
 <LI><a href="#[286]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;geventSendEvent
 <LI><a href="#[2c9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;geventRegisterCallback
 <LI><a href="#[20c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;geventGetSourceListener
