@@ -25,6 +25,7 @@ void MacReceiver(void *argument)
 	struct queueMsg_t queueMsg_IND;		// queue message for the LCD
 	uint8_t * qPtr;
 	osStatus_t retCode;
+	uint8_t destAddress;
 	
 	//------------------------------------------------------------------------------
 	for (;;)											// loop until doomsday
@@ -92,7 +93,9 @@ void MacReceiver(void *argument)
 					queueMsg.sapi = qPtr[0] & 7;//0b0000111;
 					LAY_DATA_PUT(queueMsg,queue_macS_id);
 				}else{
-					if(qPtr[1]>>3 == gTokenInterface.myAddress)
+					destAddress = qPtr[1]>>3;
+					if((destAddress == gTokenInterface.myAddress) 
+						|| (destAddress == BROADCAST_ADDRESS))
 					{
 						/*****************************************
 						*DEST ADDR = MY ADDR
