@@ -1,23 +1,24 @@
 /* -----------------------------------------------------------------------------
- * Copyright (c) 2013-2019 Arm Limited (or its affiliates). All 
- * rights reserved.
+ * Copyright (c) 2013-2016 ARM Ltd.
  *
- * SPDX-License-Identifier: Apache-2.0
+ * This software is provided 'as-is', without any express or implied warranty.
+ * In no event will the authors be held liable for any damages arising from
+ * the use of this software. Permission is granted to anyone to use this
+ * software for any purpose, including commercial applications, and to alter
+ * it and redistribute it freely, subject to the following restrictions:
  *
- * Licensed under the Apache License, Version 2.0 (the License); you may
- * not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * 1. The origin of this software must not be misrepresented; you must not
+ *    claim that you wrote the original software. If you use this software in
+ *    a product, an acknowledgment in the product documentation would be
+ *    appreciated but is not required.
  *
- * www.apache.org/licenses/LICENSE-2.0
+ * 2. Altered source versions must be plainly marked as such, and must not be
+ *    misrepresented as being the original software.
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an AS IS BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * 3. This notice may not be removed or altered from any source distribution.
  *
- * $Date:        17. June 2019
- * $Revision:    V1.5.1
+ * $Date:        4. November 2016
+ * $Revision:    V1.4.0
  *
  * Project:      RTE Device Configuration for ST STM32F7xx
  * -------------------------------------------------------------------------- */
@@ -1055,7 +1056,7 @@
 #error "Invalid I2C2_SCL Pin Configuration!"
 #endif
 
-//   <o> I2C2_SDA Pin <0=>PF0 <1=>PH5 <2=>PB11
+//   <o> I2C2_SDA Pin <0=>PF0 <1=>PH5 <2=>PB11 <3=>PB3 <4=>PB9
 #define RTE_I2C2_SDA_PORT_ID            0
 #if    (RTE_I2C2_SDA_PORT_ID == 0)
 #define RTE_I2C2_SDA_PORT               GPIOF
@@ -1066,6 +1067,12 @@
 #elif  (RTE_I2C2_SDA_PORT_ID == 2)
 #define RTE_I2C2_SDA_PORT               GPIOB
 #define RTE_I2C2_SDA_BIT                11
+#elif  (RTE_I2C2_SDA_PORT_ID == 3)
+#define RTE_I2C2_SDA_PORT               GPIOB
+#define RTE_I2C2_SDA_BIT                3
+#elif  (RTE_I2C2_SDA_PORT_ID == 4)
+#define RTE_I2C2_SDA_PORT               GPIOB
+#define RTE_I2C2_SDA_BIT                9
 #else
 #error "Invalid I2C2_SDA Pin Configuration!"
 #endif
@@ -1107,7 +1114,7 @@
 
 // <e> I2C3 (Inter-integrated Circuit Interface 3) [Driver_I2C3]
 // <i> Configuration settings for Driver_I2C3 in component ::CMSIS Driver:I2C
-#define RTE_I2C3                        0
+#define RTE_I2C3                        1
 
 //   <o> I2C3_SCL Pin <0=>PH7 <1=>PA8
 #define RTE_I2C3_SCL_PORT_ID            0
@@ -1121,7 +1128,7 @@
 #error "Invalid I2C3_SCL Pin Configuration!"
 #endif
 
-//   <o> I2C3_SDA Pin <0=>PH8 <1=>PC9
+//   <o> I2C3_SDA Pin <0=>PH8 <1=>PC9 <2=>PB4 <3=>PB8
 #define RTE_I2C3_SDA_PORT_ID            0
 #if    (RTE_I2C3_SDA_PORT_ID == 0)
 #define RTE_I2C3_SDA_PORT               GPIOH
@@ -1129,6 +1136,12 @@
 #elif  (RTE_I2C3_SDA_PORT_ID == 1)
 #define RTE_I2C3_SDA_PORT               GPIOC
 #define RTE_I2C3_SDA_BIT                9
+#elif  (RTE_I2C3_SDA_PORT_ID == 2)
+#define RTE_I2C3_SDA_PORT               GPIOB
+#define RTE_I2C3_SDA_BIT                4
+#elif  (RTE_I2C3_SDA_PORT_ID == 3)
+#define RTE_I2C3_SDA_PORT               GPIOB
+#define RTE_I2C3_SDA_BIT                8
 #else
 #error "Invalid I2C3_SDA Pin Configuration!"
 #endif
@@ -1387,7 +1400,7 @@
 #error "Invalid SPI2_MISO Pin Configuration!"
 #endif
 
-//   <o> SPI2_MOSI Pin <0=>Not Used <1=>PB15 <2=>PC1 <3=>PC3 <4=>PI3
+//   <o> SPI2_MOSI Pin <0=>Not Used <1=>PB15 <2=>PC1 <3=>PC3 <4=>PI3 <5=>PB15
 #define RTE_SPI2_MOSI_PORT_ID           0
 #if    (RTE_SPI2_MOSI_PORT_ID == 0)
 #define RTE_SPI2_MOSI                   0
@@ -1407,6 +1420,10 @@
 #define RTE_SPI2_MOSI                   1
 #define RTE_SPI2_MOSI_PORT              GPIOI
 #define RTE_SPI2_MOSI_BIT               3
+#elif  (RTE_SPI2_MOSI_PORT_ID == 5)
+#define RTE_SPI2_MOSI                   1
+#define RTE_SPI2_MOSI_PORT              GPIOB
+#define RTE_SPI2_MOSI_BIT               15
 #else
 #error "Invalid SPI2_MOSI Pin Configuration!"
 #endif
@@ -2073,10 +2090,10 @@
 
 // <e> SAI2 (Serial Audio Interface 2) [Driver_SAI2]
 // <i> Configuration settings for Driver_SAI2 in component ::CMSIS Driver:SAI
-#define RTE_SAI2                        0
+#define RTE_SAI2                        1
 
 //   <o> SAI2_SD_A Pin <0=>Not Used <1=>PD11 <2=>PI6
-#define RTE_SAI2_SD_A_PORT_ID           0
+#define RTE_SAI2_SD_A_PORT_ID           2
 #if    (RTE_SAI2_SD_A_PORT_ID == 0)
 #define RTE_SAI2_SD_A_PIN               0
 #elif  (RTE_SAI2_SD_A_PORT_ID == 1)
@@ -2092,7 +2109,7 @@
 #endif
 
 //   <o> SAI2_FS_A Pin <0=>Not Used <1=>PD12 <2=>PI7
-#define RTE_SAI2_FS_A_PORT_ID           0
+#define RTE_SAI2_FS_A_PORT_ID           2
 #if    (RTE_SAI2_FS_A_PORT_ID == 0)
 #define RTE_SAI2_FS_A_PIN               0
 #elif  (RTE_SAI2_FS_A_PORT_ID == 1)
@@ -2108,7 +2125,7 @@
 #endif
 
 //   <o> SAI2_SCK_A Pin <0=>Not Used <1=>PD13 <2=>PI5
-#define RTE_SAI2_SCK_A_PORT_ID          0
+#define RTE_SAI2_SCK_A_PORT_ID          2
 #if    (RTE_SAI2_SCK_A_PORT_ID == 0)
 #define RTE_SAI2_SCK_A_PIN              0
 #elif  (RTE_SAI2_SCK_A_PORT_ID == 1)
@@ -2124,7 +2141,7 @@
 #endif
 
 //   <o> SAI2_MCLK_A Pin <0=>Not Used <1=>PE0 <2=>PI4
-#define RTE_SAI2_MCLK_A_PORT_ID         0
+#define RTE_SAI2_MCLK_A_PORT_ID         2
 #if    (RTE_SAI2_MCLK_A_PORT_ID == 0)
 #define RTE_SAI2_MCLK_A_PIN             0
 #elif  (RTE_SAI2_MCLK_A_PORT_ID == 1)
@@ -2140,7 +2157,7 @@
 #endif
 
 //   <o> SAI2_SD_B Pin <0=>Not Used <1=>PA0 <2=>PE11 <3=>PF11 <4=>PG10
-#define RTE_SAI2_SD_B_PORT_ID           0
+#define RTE_SAI2_SD_B_PORT_ID           4
 #if    (RTE_SAI2_SD_B_PORT_ID == 0)
 #define RTE_SAI2_SD_B_PIN               0
 #elif  (RTE_SAI2_SD_B_PORT_ID == 1)
@@ -2241,7 +2258,7 @@
 //     <o4> Priority <0=>Low <1=>Medium <2=>High <3=>Very High
 //     <i>  Selects DMA Priority
 //   </e>
-#define RTE_SAI2_A_DMA                  0
+#define RTE_SAI2_A_DMA                  1
 #define RTE_SAI2_A_DMA_NUMBER           2
 #define RTE_SAI2_A_DMA_STREAM           4
 #define RTE_SAI2_A_DMA_CHANNEL          3
@@ -2257,7 +2274,7 @@
 //     <o4> Priority <0=>Low <1=>Medium <2=>High <3=>Very High
 //     <i>  Selects DMA Priority
 //   </e>
-#define RTE_SAI2_B_DMA                  0
+#define RTE_SAI2_B_DMA                  1
 #define RTE_SAI2_B_DMA_NUMBER           2
 #define RTE_SAI2_B_DMA_STREAM           7
 #define RTE_SAI2_B_DMA_CHANNEL          0
@@ -3054,10 +3071,10 @@
 //       <o3> Bit <0-15>
 //       <i>  Selects Port Bit
 //     </e>
-#define RTE_OTG_FS_VBUS_PIN             0
+#define RTE_OTG_FS_VBUS_PIN             1
 #define RTE_OTG_FS_VBUS_ACTIVE          0
-#define RTE_OTG_FS_VBUS_PORT            GPIO_PORT(0)
-#define RTE_OTG_FS_VBUS_BIT             0
+#define RTE_OTG_FS_VBUS_PORT            GPIO_PORT(7)
+#define RTE_OTG_FS_VBUS_BIT             5
 
 //     <e> Overcurrent Detection Pin
 //     <i> Configure Pin for overcurrent detection
@@ -3071,10 +3088,10 @@
 //       <o3> Bit <0-15>
 //       <i>  Selects Port Bit
 //     </e>
-#define RTE_OTG_FS_OC_PIN               0
+#define RTE_OTG_FS_OC_PIN               1
 #define RTE_OTG_FS_OC_ACTIVE            0
-#define RTE_OTG_FS_OC_PORT              GPIO_PORT(0)
-#define RTE_OTG_FS_OC_BIT               0
+#define RTE_OTG_FS_OC_PORT              GPIO_PORT(5)
+#define RTE_OTG_FS_OC_BIT               11
 //   </e>
 
 // </e>
@@ -3088,7 +3105,6 @@
 //     <o> PHY Interface
 //       <0=>On-chip full-speed PHY
 //       <1=>External ULPI high-speed PHY
-//       <2=>Internal UTMI high-speed PHY
 #define RTE_USB_OTG_HS_PHY              1
 
 //     <h> External ULPI Pins (UTMI+ Low Pin Interface)
@@ -3227,10 +3243,10 @@
 //       <o3> Bit <0-15>
 //       <i>  Selects Port Bit
 //     </e>
-#define RTE_OTG_HS_VBUS_PIN             0
+#define RTE_OTG_HS_VBUS_PIN             1
 #define RTE_OTG_HS_VBUS_ACTIVE          0
-#define RTE_OTG_HS_VBUS_PORT            GPIO_PORT(0)
-#define RTE_OTG_HS_VBUS_BIT             0
+#define RTE_OTG_HS_VBUS_PORT            GPIO_PORT(2)
+#define RTE_OTG_HS_VBUS_BIT             2
 
 //     <e> Overcurrent Detection Pin
 //     <i> Configure Pin for overcurrent detection
@@ -3244,10 +3260,10 @@
 //       <o3> Bit <0-15>
 //       <i>  Selects Port Bit
 //     </e>
-#define RTE_OTG_HS_OC_PIN               0
+#define RTE_OTG_HS_OC_PIN               1
 #define RTE_OTG_HS_OC_ACTIVE            0
-#define RTE_OTG_HS_OC_PORT              GPIO_PORT(0)
-#define RTE_OTG_HS_OC_BIT               0
+#define RTE_OTG_HS_OC_PORT              GPIO_PORT(5)
+#define RTE_OTG_HS_OC_BIT               12
 //   </e>
 
 //   <o.0> DMA

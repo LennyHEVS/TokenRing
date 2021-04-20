@@ -82,7 +82,7 @@ void MacReceiver(void *argument)
 				******************************************/
 				// if it is not a token
 				//an and because qPtr[0] = 0|AAAA|SSS
-				if(qPtr[0]>>3 == gTokenInterface.myAddress )
+				if(qPtr[0]>>3 == gTokenInterface.myAddress)
 				{
 					/*****************************************
 					*SRC ADDR = MY ADDR
@@ -107,7 +107,7 @@ void MacReceiver(void *argument)
 						}
 						//We keep only the 6-LSB
 						crc &= 0x3F;//0b111111;
-						if(crc == ((qPtr[qPtr[2] + 3]>>2) & 0x3F))
+						if(crc == (qPtr[qPtr[2] + 3]>>2))
 						{
 							/*****************************************
 							*CHECKSUM VALID

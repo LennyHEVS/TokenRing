@@ -21,6 +21,8 @@ void MAC_ERROR_INDICATION(struct queueMsg_t msg)
 	osStatus_t retCode;
 	
 	msg.type = MAC_ERROR;
+	sprintf((char*)(msg.anyPtr),"Destination address %d does not respond\0",(((uint8_t*) msg.anyPtr)[1] >> 3) + 1);
+	
 	retCode = osMessageQueuePut( 	
 					queue_lcd_id,
 					&msg,
@@ -46,8 +48,8 @@ void MAC_DATA_REQUEST(struct queueMsg_t msg)
 		msgLength = strlen(msg.anyPtr);
 		
 		qPtr = osMemoryPoolAlloc(memPool,osWaitForever);
-		qPtr[0] = gTokenInterface.myAddress<<3 + msg.sapi;
-		qPtr[1] = msg.addr<<3 + msg.sapi;
+		qPtr[0] = (gTokenInterface.myAddress<<3) + msg.sapi;
+		qPtr[1] = (msg.addr<<3) + msg.sapi;
 		qPtr[2] = msgLength;
 		
 		memcpy(qPtr+3,msg.anyPtr,msgLength);
@@ -60,6 +62,8 @@ void MAC_DATA_REQUEST(struct queueMsg_t msg)
 		
 		buffer[bufferNb-1] = qPtr;
 	}
+	
+	mac_state = AwaitingTransmission;
 	
 	//----------------------------------------------------------------------------
 	// MEMORY RELEASE	(received data : mac layer style)
@@ -110,7 +114,18 @@ void MacSender(void *argument)
 		switch(queueMsg.type)
 		{
 			case DATA_IND:
-				MAC_DATA_REQUEST(queueMsg);
+				if(gTokenInterface.connected)
+				{
+					MAC_DATA_REQUEST(queueMsg);
+				}
+				else
+				{
+					//----------------------------------------------------------------------------
+					// MEMORY RELEASE	(received token : mac layer style)
+					//----------------------------------------------------------------------------
+					retCode = osMemoryPoolFree(memPool,queueMsg.anyPtr);
+					CheckRetCode(retCode,__LINE__,__FILE__,CONTINUE);
+				}
 				break;
 			case TOKEN:
 				
@@ -135,40 +150,59 @@ void MacSender(void *argument)
 				break;
 			case DATABACK:
 				qPtr = queueMsg.anyPtr;
-				msgLength = qPtr[2];
-				if((qPtr[3+msgLength] & 0x01) == 0x01)
+				if((qPtr[1]>>3) == BROADCAST_ADDRESS)
 				{
-					if((qPtr[3+msgLength] & 0x02) == 0x02)
-					{
-						//----------------------------------------------------------------------------
-						// MEMORY RELEASE	(received frame : mac layer style)
-						//----------------------------------------------------------------------------
-						retCode = osMemoryPoolFree(memPool,queueMsg.anyPtr);
-						CheckRetCode(retCode,__LINE__,__FILE__,CONTINUE);
-						
-						//----------------------------------------------------------------------------
-						// MEMORY RELEASE	(sent frame : mac layer style)
-						//----------------------------------------------------------------------------
-						retCode = osMemoryPoolFree(memPool,sentFrame);
-						CheckRetCode(retCode,__LINE__,__FILE__,CONTINUE);
-						
-						MAC_NEW_TOKEN();
-					}
-					else
-					{
-						//Send data back
-						qPtr = osMemoryPoolAlloc(memPool,osWaitForever);
-						queueMsg.type = TO_PHY;
-						queueMsg.anyPtr = qPtr;
-						memcpy(qPtr,sentFrame,sentFrame[2] + 4);
-						PH_DATA_REQUEST(queueMsg);
-						break;
-					}
+					//----------------------------------------------------------------------------
+					// MEMORY RELEASE	(received frame : mac layer style)
+					//----------------------------------------------------------------------------
+					retCode = osMemoryPoolFree(memPool,queueMsg.anyPtr);
+					CheckRetCode(retCode,__LINE__,__FILE__,CONTINUE);
+					
+					//----------------------------------------------------------------------------
+					// MEMORY RELEASE	(sent frame : mac layer style)
+					//----------------------------------------------------------------------------
+					retCode = osMemoryPoolFree(memPool,sentFrame);
+					CheckRetCode(retCode,__LINE__,__FILE__,CONTINUE);
+					
+					MAC_NEW_TOKEN();
 				}
 				else
 				{
-					MAC_ERROR_INDICATION(queueMsg);
-					MAC_NEW_TOKEN();
+					msgLength = qPtr[2];
+					if((qPtr[3+msgLength] & 0x02) == 0x02) //Check Read
+					{
+						if((qPtr[3+msgLength] & 0x01) == 0x01)	//Check Ack
+						{
+							//----------------------------------------------------------------------------
+							// MEMORY RELEASE	(received frame : mac layer style)
+							//----------------------------------------------------------------------------
+							retCode = osMemoryPoolFree(memPool,queueMsg.anyPtr);
+							CheckRetCode(retCode,__LINE__,__FILE__,CONTINUE);
+							
+							//----------------------------------------------------------------------------
+							// MEMORY RELEASE	(sent frame : mac layer style)
+							//----------------------------------------------------------------------------
+							retCode = osMemoryPoolFree(memPool,sentFrame);
+							CheckRetCode(retCode,__LINE__,__FILE__,CONTINUE);
+							
+							MAC_NEW_TOKEN();
+						}
+						else
+						{
+							//Send data back
+							qPtr = osMemoryPoolAlloc(memPool,osWaitForever);
+							queueMsg.type = TO_PHY;
+							queueMsg.anyPtr = qPtr;
+							memcpy(qPtr,sentFrame,sentFrame[2] + 4);
+							PH_DATA_REQUEST(queueMsg);
+							break;
+						}
+					}
+					else
+					{
+						MAC_ERROR_INDICATION(queueMsg);
+						MAC_NEW_TOKEN();
+					}
 				}
 				if(bufferNb == 0)	//buffer empty ?
 				{
