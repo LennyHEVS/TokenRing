@@ -77,6 +77,7 @@ void MAC_DATA_REQUEST(struct queueMsg_t msg)
 void MAC_START_REQUEST(uint8_t SAPI)
 {
 	gTokenInterface.station_list[gTokenInterface.myAddress] |= (1 << SAPI);
+	gTokenInterface.connected = true;
 }
 //////////////////////////////////////////////////////////////////////////////////
 // MAC STOP REQUEST
@@ -84,6 +85,7 @@ void MAC_START_REQUEST(uint8_t SAPI)
 void MAC_STOP_REQUEST(uint8_t SAPI)
 {
 	gTokenInterface.station_list[gTokenInterface.myAddress] &= ~(1 << SAPI);
+	gTokenInterface.connected = false;
 }
 //////////////////////////////////////////////////////////////////////////////////
 // THREAD MAC RECEIVER
@@ -114,17 +116,17 @@ void MacSender(void *argument)
 		switch(queueMsg.type)
 		{
 			case DATA_IND:
-				if(gTokenInterface.connected)
-				{
-					MAC_DATA_REQUEST(queueMsg);
-				}
-				else
+				if((!gTokenInterface.connected) && (queueMsg.sapi == CHAT_SAPI))
 				{
 					//----------------------------------------------------------------------------
 					// MEMORY RELEASE	(received token : mac layer style)
 					//----------------------------------------------------------------------------
 					retCode = osMemoryPoolFree(memPool,queueMsg.anyPtr);
 					CheckRetCode(retCode,__LINE__,__FILE__,CONTINUE);
+				}
+				else
+				{
+					MAC_DATA_REQUEST(queueMsg);
 				}
 				break;
 			case TOKEN:
@@ -190,10 +192,8 @@ void MacSender(void *argument)
 						else
 						{
 							//Send data back
-							qPtr = osMemoryPoolAlloc(memPool,osWaitForever);
 							queueMsg.type = TO_PHY;
-							queueMsg.anyPtr = qPtr;
-							memcpy(qPtr,sentFrame,sentFrame[2] + 4);
+							memcpy(queueMsg.anyPtr,sentFrame,sentFrame[2] + 4);
 							PH_DATA_REQUEST(queueMsg);
 							break;
 						}
