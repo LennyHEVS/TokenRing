@@ -64,6 +64,4 @@
 .\objects\gfile_fs_rom.o: C:\Users\favre\AppData\Local\Arm\Packs\uGFX\uGFX_lib\2.0.0\ugfx\src\gfile\../../src/gaudio/gaudio.h
 .\objects\gfile_fs_rom.o: C:\Users\favre\AppData\Local\Arm\Packs\uGFX\uGFX_lib\2.0.0\ugfx\src\gfile\gfile_fs.h
 .\objects\gfile_fs_rom.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
-.\objects\gfile_fs_rom.o: ..\TokenRing\romfs_files.h
-.\objects\gfile_fs_rom.o: ..\TokenRing\resources/token.h
-.\objects\gfile_fs_rom.o: ..\TokenRing\resources/token_w.h
+.\objects\gfile_fs_rom.o: C:\Keil_v5\uGFX\uGFX_lib\2.0.0\ugfx\src\gfile\romfs_files.h
